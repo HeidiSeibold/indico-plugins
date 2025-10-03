@@ -21,41 +21,10 @@ class EventSettingsForm(PaymentEventSettingsFormBase):
     pass
 
 
-class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
-    """Simple Voucher Payment Plugin"""
-    
-    configurable = True
-    settings_form = PluginSettingsForm
-    event_settings_form = EventSettingsForm
-    
-    default_settings = {
-        'method_name': 'Voucher Code'
-    }
-    
-    default_event_settings = {
-        'enabled': True,
-        'method_name': 'Voucher Code'
-    }
-    
-    # Simple hardcoded vouchers for testing
-    VALID_VOUCHERS = {
-        'VOUCHER123': {'value': 100, 'currency': 'EUR'},
-        'VOUCHER456': {'value': 50, 'currency': 'EUR'},
-        'TEST2024': {'value': 200, 'currency': 'EUR'}
-    }
-    
-    def get_blueprints(self):
-        return IndicoPluginBlueprint('payment_voucher', __name__)
-    
-    def adjust_payment_form_data(self, data):
-        """Add payment route to form data"""
-        registration = data['registration']
-        data['payment_url'] = url_for('payment_voucher.pay', 
-                                      event_id=registration.event_id,
-                                      reg_form_id=registration.registration_form_id)
-        return data
+# Create blueprint and add route
+blueprint = IndicoPluginBlueprint('payment_voucher', __name__)
 
-
+# Define RH class
 class RHVoucherPayment(RHPaymentBase):
     """Handle voucher payment"""
     
@@ -98,11 +67,49 @@ class RHVoucherPayment(RHPaymentBase):
                                self.registration.locator.registrant))
 
 
-# Create blueprint and add route
-blueprint = IndicoPluginBlueprint('payment_voucher', __name__)
+# Register route
 blueprint.add_url_rule(
     '/event/<int:event_id>/registrations/<int:reg_form_id>/payment/voucher',
     'pay',
     RHVoucherPayment,
     methods=('GET', 'POST')
 )
+
+# Define plugin class and return blueprint
+class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
+    """Voucher"""
+    
+    configurable = True
+    settings_form = PluginSettingsForm
+    event_settings_form = EventSettingsForm
+    
+    default_settings = {
+        'method_name': 'Voucher Code'
+    }
+    
+    default_event_settings = {
+        'enabled': True,
+        'method_name': 'Voucher Code'
+    }
+    
+    # Simple hardcoded vouchers for testing
+    VALID_VOUCHERS = {
+        'VOUCHER123': {'value': 100, 'currency': 'EUR'},
+        'VOUCHER456': {'value': 50, 'currency': 'EUR'},
+        'TEST2024': {'value': 200, 'currency': 'EUR'}
+    }
+    
+    def get_blueprints(self):
+        return blueprint
+    
+    def adjust_payment_form_data(self, data):
+        """Add payment route to form data"""
+        registration = data['registration']
+        data['payment_url'] = url_for('payment_voucher.pay', 
+                                      event_id=registration.event_id,
+                                      reg_form_id=registration.registration_form_id)
+        return data
+
+
+
+
