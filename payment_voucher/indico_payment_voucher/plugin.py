@@ -29,12 +29,18 @@ class RHVoucherPayment(RHPaymentBase):
     """Handle voucher payment"""
     
     def _process(self):
+        # for debugging 
+        print("REQUEST METHOD:", request.method)
+
         if request.method == 'GET':
             # Show payment form
             return current_plugin.render_template(
                 'event_payment_form.html',
                 registration=self.registration
             )
+        
+        #for debugging
+        print("POST DATA:", request.form)
         
         # Process payment
         voucher_code = request.form.get('voucher_code', '').strip().upper()

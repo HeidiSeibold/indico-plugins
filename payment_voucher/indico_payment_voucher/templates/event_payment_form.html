@@ -1,7 +1,18 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashed-messages">
+      {% for category, msg in messages %}
+        <li class="{{ category }}">{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+
 <div class="payment-form">
     <h3>Enter Voucher Code</h3>
-    <form method="post">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <form method="post" action="">
         <input type="text" name="voucher_code" placeholder="Voucher Code" required>
         <button type="submit">Pay with Voucher</button>
     </form>
