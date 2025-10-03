@@ -24,7 +24,7 @@ dependencies = ['indico>=3.3', 'stripe==12.1.0', 'iso4217==1.12.20240625']
 GitHub = 'https://github.com/indico/indico-plugins'
 
 [project.entry-points.'indico.plugins']
-payment_voucher = 'indico_payment_voucher.plugin:VoucherPaymentPlugin'
+payment_voucher = 'indico_payment_voucher.plugin:StripePaymentPlugin'
 
 [build-system]
 requires = ['hatchling==1.27.0']

@@ -20,7 +20,7 @@ from indico.web.args import use_kwargs
 from indico.web.flask.util import url_for
 
 from indico_payment_voucher import _
-from indico_payment_voucher.plugin import VoucherPaymentPlugin
+from indico_payment_voucher.plugin import StripePaymentPlugin
 from indico_payment_voucher.util import conv_from_stripe_amount, conv_to_stripe_amount, get_stripe_api_key
 
 
