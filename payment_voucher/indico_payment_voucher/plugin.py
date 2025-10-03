@@ -3,7 +3,9 @@
 from flask import flash, redirect, request
 from flask_pluginengine import current_plugin
 from indico.core.plugins import IndicoPlugin
-from indico.modules.events.payment import PaymentPluginMixin
+from indico.modules.events.payment import (PaymentPluginMixin, 
+                                           PaymentPluginSettingsFormBase,
+                                           PaymentEventSettingsFormBase)
 from indico.modules.events.payment.models.transactions import TransactionAction
 from indico.modules.events.payment.util import register_transaction
 from indico.modules.events.payment.controllers import RHPaymentBase
@@ -11,12 +13,27 @@ from indico.core.plugins import IndicoPluginBlueprint
 from indico.web.flask.util import url_for
 
 
+class PluginSettingsForm(PaymentPluginSettingsFormBase):
+    pass
+
+
+class EventSettingsForm(PaymentEventSettingsFormBase):
+    pass
+
+
 class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     """Simple Voucher Payment Plugin"""
     
-    configurable = False
+    configurable = True
+    settings_form = PluginSettingsForm
+    event_settings_form = EventSettingsForm
     
     default_settings = {
+        'method_name': 'Voucher Code'
+    }
+    
+    default_event_settings = {
+        'enabled': True,
         'method_name': 'Voucher Code'
     }
     
