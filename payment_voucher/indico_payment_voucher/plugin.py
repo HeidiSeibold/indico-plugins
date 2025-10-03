@@ -105,9 +105,10 @@ class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     def adjust_payment_form_data(self, data):
         """Add payment route to form data"""
         registration = data['registration']
-        data['payment_url'] = url_for('payment_voucher.pay', 
+        data['payment_url'] = url_for('plugin_payment_voucher.pay',
                                       event_id=registration.event_id,
                                       reg_form_id=registration.registration_form_id)
+
         return data
 
 
