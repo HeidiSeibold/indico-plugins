@@ -76,8 +76,9 @@ class RHVoucherPayment(RHPaymentBase):
                                self.registration.locator.registrant))
 
 
-# Add route
-VoucherPaymentPlugin.blueprint.add_url_rule(
+# Create blueprint and add route
+blueprint = IndicoPluginBlueprint('payment_voucher', __name__)
+blueprint.add_url_rule(
     '/event/<int:event_id>/registrations/<int:reg_form_id>/payment/voucher',
     'pay',
     RHVoucherPayment,
