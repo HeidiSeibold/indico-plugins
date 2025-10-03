@@ -8,7 +8,7 @@
 from decimal import Decimal
 
 import iso4217
-import voucher
+import stripe
 from werkzeug.exceptions import NotImplemented as HTTPNotImplemented
 from wtforms import ValidationError
 
