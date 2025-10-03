@@ -13,7 +13,9 @@
 <div class="payment-form">
     <h3>Enter Voucher Code</h3>
     <form method="post" action="">
+        {{ csrf_token() }}
         <input type="text" name="voucher_code" placeholder="Voucher Code" required>
         <button type="submit">Pay with Voucher</button>
     </form>
+
 </div>
