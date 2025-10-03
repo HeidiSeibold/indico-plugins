@@ -28,6 +28,8 @@ blueprint = IndicoPluginBlueprint('payment_voucher', __name__)
 class RHVoucherPayment(RHPaymentBase):
     """Handle voucher payment"""
     
+    csrf_enabled = True 
+
     def _process(self):
         # for debugging 
         print("REQUEST METHOD:", request.method)
