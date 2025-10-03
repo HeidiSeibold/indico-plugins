@@ -13,3 +13,6 @@ dependencies = [
 
 [project.entry-points."indico.plugins"]
 payment_voucher = "indico_payment_voucher.plugin:VoucherPaymentPlugin"
+
+[tool.setuptools.package-data]
+"indico_payment_voucher" = ["templates/*.html"]
