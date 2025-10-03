@@ -14,6 +14,8 @@ from indico.web.flask.util import url_for
 class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     """Simple Voucher Payment Plugin"""
     
+    configurable = False
+    
     default_settings = {
         'method_name': 'Voucher Code'
     }
