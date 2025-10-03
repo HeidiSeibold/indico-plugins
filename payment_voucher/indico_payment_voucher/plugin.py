@@ -32,7 +32,7 @@ class RHVoucherPayment(RHPaymentBase):
         if request.method == 'GET':
             # Show payment form
             return current_plugin.render_template(
-                'payment_form.html',
+                'event_payment_form.html',
                 registration=self.registration
             )
         
