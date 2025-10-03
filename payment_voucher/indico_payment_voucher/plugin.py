@@ -94,6 +94,6 @@ class StripePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         return url_for_plugin(self.name + '.static', filename='images/logo.svg')
 
     def get_blueprints(self):
-        from indico_payment_stripe.blueprint import blueprint
+        from indico_payment_voucher.blueprint import blueprint
 
         return blueprint
