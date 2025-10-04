@@ -38,45 +38,48 @@ class RHVoucherPayment(RHPaymentBase):
     csrf_enabled = True 
 
     def _process(self):
-        # for debugging 
-        print("REQUEST METHOD:", request.method)
-
-        form = VoucherForm(request.form if request.method == 'POST' else None)
 
         if request.method == 'GET':
-            # Show payment form
+            form = VoucherForm()
             return current_plugin.render_template(
                 'event_payment_form.html',
                 registration=self.registration,
                 form=form
             )
-        
-        # POST: validate CSRF + form
-        if not form.validate_on_submit():
-            flash('Invalid submission (maybe CSRF expired?)', 'error')
-            return redirect(request.url)
+        else:
+            form = VoucherForm(request.form)
+            if not form.validate_on_submit():
+                flash('Invalid submission (maybe CSRF expired?)', 'error')
+                return current_plugin.render_template(
+                    'event_payment_form.html',
+                    registration=self.registration,
+                    form=form
+                )
 
-        voucher_code = form.voucher_code.data.strip().upper()
-        vouchers = current_plugin.VALID_VOUCHERS
+            voucher_code = form.voucher_code.data.strip().upper()
+            vouchers = current_plugin.VALID_VOUCHERS
 
-        # Validate voucher
-        if voucher_code not in vouchers:
-            flash('Invalid voucher code', 'error')
-            return redirect(request.url)
+            # Validate voucher
+            if voucher_code not in vouchers:
+                flash('Invalid voucher code', 'error')
+                return current_plugin.render_template(
+                    'event_payment_form.html',
+                    registration=self.registration,
+                    form=form
+                )
 
-        # Register successful payment
-        register_transaction(
-            registration=self.registration,
-            amount=self.registration.price,
-            currency=self.registration.currency,
-            action=TransactionAction.complete,
-            provider='voucher',
-            data={'voucher_code': voucher_code}
-        )
-        
-        flash('Payment successful!', 'success')
-        return redirect(url_for('event_registration.display_regform', 
-                               self.registration.locator.registrant))
+            # Register successful payment
+            register_transaction(
+                registration=self.registration,
+                amount=self.registration.price,
+                currency=self.registration.currency,
+                action=TransactionAction.complete,
+                provider='voucher',
+                data={'voucher_code': voucher_code}
+            )
+            flash('Payment successful!', 'success')
+            return redirect(url_for('event_registration.display_regform', 
+                                   self.registration.locator.registrant))
 
 
 # Register route
