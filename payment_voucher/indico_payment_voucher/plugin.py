@@ -11,6 +11,8 @@ from indico.modules.events.payment.util import register_transaction
 from indico.modules.events.payment.controllers import RHPaymentBase
 from indico.core.plugins import IndicoPluginBlueprint
 from indico.web.flask.util import url_for
+from indico.web.forms.base import IndicoForm
+from wtforms import StringField
 
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
@@ -19,6 +21,9 @@ class PluginSettingsForm(PaymentPluginSettingsFormBase):
 
 class EventSettingsForm(PaymentEventSettingsFormBase):
     pass
+
+class VoucherForm(IndicoForm):
+    voucher_code = StringField()
 
 
 # Create blueprint and add route
@@ -35,10 +40,12 @@ class RHVoucherPayment(RHPaymentBase):
         print("REQUEST METHOD:", request.method)
 
         if request.method == 'GET':
+            form = VoucherForm()
             # Show payment form
             return current_plugin.render_template(
                 'event_payment_form.html',
-                registration=self.registration
+                registration=self.registration,
+                form=form
             )
         
         #for debugging
