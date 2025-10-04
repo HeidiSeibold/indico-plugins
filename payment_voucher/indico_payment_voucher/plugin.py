@@ -38,8 +38,10 @@ class RHVoucherPayment(RHPaymentBase):
     csrf_enabled = True 
 
     def _process(self):
+        print("[DEBUG] RHVoucherPayment._process called. Request method:", request.method)
 
         if request.method == 'GET':
+            print("[DEBUG] GET request: rendering payment form.")
             form = VoucherForm()
             return current_plugin.render_template(
                 'event_payment_form.html',
@@ -47,8 +49,10 @@ class RHVoucherPayment(RHPaymentBase):
                 form=form
             )
         else:
+            print("[DEBUG] POST request: processing form submission.")
             form = VoucherForm(request.form)
             if not form.validate_on_submit():
+                print("[DEBUG] Form validation failed.")
                 flash('Invalid submission (maybe CSRF expired?)', 'error')
                 return current_plugin.render_template(
                     'event_payment_form.html',
@@ -61,6 +65,7 @@ class RHVoucherPayment(RHPaymentBase):
 
             # Validate voucher
             if voucher_code not in vouchers:
+                print(f"[DEBUG] Invalid voucher code: {voucher_code}")
                 flash('Invalid voucher code', 'error')
                 return current_plugin.render_template(
                     'event_payment_form.html',
@@ -68,6 +73,7 @@ class RHVoucherPayment(RHPaymentBase):
                     form=form
                 )
 
+            print(f"[DEBUG] Voucher code valid: {voucher_code}. Registering transaction.")
             # Register successful payment
             register_transaction(
                 registration=self.registration,
@@ -78,6 +84,7 @@ class RHVoucherPayment(RHPaymentBase):
                 data={'voucher_code': voucher_code}
             )
             flash('Payment successful!', 'success')
+            print("[DEBUG] Payment successful. Redirecting.")
             return redirect(url_for('event_registration.display_regform', 
                                    self.registration.locator.registrant))
 
