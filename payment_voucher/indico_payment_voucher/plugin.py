@@ -42,7 +42,7 @@ class RHVoucherPayment(RHPaymentBase):
         print("REQUEST METHOD:", request.method)
 
 
-        form = VoucherForm()
+        form = VoucherForm(request.form if request.method == 'POST' else None)
 
         if request.method == 'GET':
             # Show payment form
