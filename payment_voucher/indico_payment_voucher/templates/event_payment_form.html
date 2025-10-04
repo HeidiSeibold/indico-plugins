@@ -1,3 +1,12 @@
+<div class="payment-form">
+  <h3>Enter Voucher Code</h3>
+  <form method="post" action="">
+    {{ form.csrf_token }}
+    {{ form.voucher_code(size=20, placeholder="Voucher Code") }}
+    <button type="submit">Pay with Voucher</button>
+  </form>
+</div>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <ul class="flashed-messages">
@@ -7,16 +16,3 @@
     </ul>
   {% endif %}
 {% endwith %}
-
-
-
-<div class="payment-form">
-    <h3>Enter Voucher Code</h3>
-    <form method="post" action="">
-        {{ form.csrf_token }}
-        {{ form.voucher_code }}
-        <button type="submit">Pay with Voucher</button>
-    </form>
-
-
-</div>

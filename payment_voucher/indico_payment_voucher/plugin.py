@@ -13,6 +13,7 @@ from indico.core.plugins import IndicoPluginBlueprint
 from indico.web.flask.util import url_for
 from indico.web.forms.base import IndicoForm
 from wtforms import StringField
+from wtforms.validators import DataRequired
 
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
@@ -22,8 +23,9 @@ class PluginSettingsForm(PaymentPluginSettingsFormBase):
 class EventSettingsForm(PaymentEventSettingsFormBase):
     pass
 
+
 class VoucherForm(IndicoForm):
-    voucher_code = StringField()
+    voucher_code = StringField('Voucher Code', [DataRequired()])
 
 
 # Create blueprint and add route
@@ -39,8 +41,10 @@ class RHVoucherPayment(RHPaymentBase):
         # for debugging 
         print("REQUEST METHOD:", request.method)
 
+
+        form = VoucherForm()
+
         if request.method == 'GET':
-            form = VoucherForm()
             # Show payment form
             return current_plugin.render_template(
                 'event_payment_form.html',
@@ -48,20 +52,24 @@ class RHVoucherPayment(RHPaymentBase):
                 form=form
             )
         
-        #for debugging
-        print("POST DATA:", request.form)
+        # POST: validate CSRF + form
+        if not form.validate_on_submit():
+            flash('Invalid submission (maybe CSRF expired?)', 'error')
+            return redirect(request.url)
+
+        voucher_code = form.voucher_code.data.strip().upper()
+        vouchers = current_plugin.VALID_VOUCHERS
         
         # Process payment
         voucher_code = request.form.get('voucher_code', '').strip().upper()
         
         # Validate voucher
-        vouchers = current_plugin.VALID_VOUCHERS
         if voucher_code not in vouchers:
             flash('Invalid voucher code', 'error')
             return redirect(request.url)
-        
+
         voucher = vouchers[voucher_code]
-        
+
         # Check if voucher covers the amount
         if voucher['value'] < self.registration.price:
             flash('Voucher value is insufficient', 'error')
