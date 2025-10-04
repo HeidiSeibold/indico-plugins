@@ -125,6 +125,15 @@ class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     def get_blueprints(self):
         return blueprint
     
+    def render_payment_form(self, registration):
+        form = VoucherForm()
+        return self.render_template(
+            'event_payment_form.html',
+            registration=registration,
+            form=form
+        )
+
+    
     def adjust_payment_form_data(self, data):
         """Add payment route to form data"""
         registration = data['registration']
@@ -133,7 +142,3 @@ class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
                                       reg_form_id=registration.registration_form_id)
 
         return data
-
-
-
-
