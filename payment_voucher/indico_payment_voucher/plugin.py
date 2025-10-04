@@ -41,7 +41,6 @@ class RHVoucherPayment(RHPaymentBase):
         # for debugging 
         print("REQUEST METHOD:", request.method)
 
-
         form = VoucherForm(request.form if request.method == 'POST' else None)
 
         if request.method == 'GET':
@@ -59,22 +58,12 @@ class RHVoucherPayment(RHPaymentBase):
 
         voucher_code = form.voucher_code.data.strip().upper()
         vouchers = current_plugin.VALID_VOUCHERS
-        
-        # Process payment
-        voucher_code = request.form.get('voucher_code', '').strip().upper()
-        
+
         # Validate voucher
         if voucher_code not in vouchers:
             flash('Invalid voucher code', 'error')
             return redirect(request.url)
 
-        voucher = vouchers[voucher_code]
-
-        # Check if voucher covers the amount
-        if voucher['value'] < self.registration.price:
-            flash('Voucher value is insufficient', 'error')
-            return redirect(request.url)
-        
         # Register successful payment
         register_transaction(
             registration=self.registration,
@@ -116,11 +105,7 @@ class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     }
     
     # Simple hardcoded vouchers for testing
-    VALID_VOUCHERS = {
-        'VOUCHER123': {'value': 100, 'currency': 'EUR'},
-        'VOUCHER456': {'value': 50, 'currency': 'EUR'},
-        'TEST2024': {'value': 200, 'currency': 'EUR'}
-    }
+    VALID_VOUCHERS = {'VOUCHER123', 'VOUCHER456', 'TEST2024'}
     
     def get_blueprints(self):
         return blueprint
