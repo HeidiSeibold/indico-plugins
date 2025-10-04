@@ -1,31 +1,18 @@
-{% extends 'events/payment/event_payment_form.html' %}
-
-{% block content %}
-<div class="payment-details-wrapper">
-    <div class="step-wrapper active-step">
-        <div class="step-icon icon-ticket"></div>
-        <h3>{% trans %}Enter Voucher Code{% endtrans %}</h3>
-        
-        <form method="post" action="{{ payment_url }}">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            
-            <div class="form-group">
-                <label for="voucher-code">{% trans %}Voucher Code{% endtrans %}</label>
-                <input type="text" 
-                       id="voucher-code"
-                       name="voucher_code" 
-                       class="form-control"
-                       placeholder="{% trans %}Enter your voucher code{% endtrans %}"
-                       style="text-transform: uppercase;"
-                       required>
-            </div>
-            
-            <div class="form-group">
-                <button type="submit" class="i-button big highlight">
-                    {% trans %}Pay with Voucher{% endtrans %}
-                </button>
-            </div>
-        </form>
-    </div>
+<div class="payment-form">
+  <h3>Enter Voucher Code</h3>
+  <form method="post" action="">
+    {{ form.csrf_token }}
+    {{ form.voucher_code(size=20, placeholder="Voucher Code") }}
+    <button type="submit">Pay with Voucher</button>
+  </form>
 </div>
-{% endblock %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashed-messages">
+      {% for category, msg in messages %}
+        <li class="{{ category }}">{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
