@@ -127,7 +127,7 @@ class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     
     def render_payment_form(self, registration):
         form = VoucherForm()
-        return blueprint.render_template(
+        return self.render_template(
             'event_payment_form.html',
             registration=registration,
             form=form
