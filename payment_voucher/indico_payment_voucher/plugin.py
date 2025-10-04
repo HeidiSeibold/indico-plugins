@@ -128,3 +128,11 @@ class VoucherPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
                                       reg_form_id=registration.registration_form_id)
 
         return data
+    
+    def render_payment_form(self, registration):
+        form = VoucherForm()
+        return current_plugin.render_template(
+            'event_payment_form.html',
+            registration=registration,
+            form=form
+        )
